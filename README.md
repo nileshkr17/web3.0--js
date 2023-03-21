@@ -10,3 +10,6 @@
 #above code transfer to express
 -res.json(blockchain)
 ![image](https://user-images.githubusercontent.com/77370375/226618977-7ebc1452-3652-405a-8511-14c7bd502dd0.png)
+
+#app.post working Fine!
+![image](https://user-images.githubusercontent.com/77370375/226623029-9f0dd33e-2e6d-4dfb-95ba-10f42554ef96.png)
