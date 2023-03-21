@@ -4,3 +4,4 @@ class BlockchainNode{
         this.url=url;
     }
 }
+module.exports=BlockchainNode;
