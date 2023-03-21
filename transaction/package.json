@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/nileshkr17/web3.0--js/issues"
   },
-  "homepage": "https://github.com/nileshkr17/web3.0--js#readme"
+  "homepage": "https://github.com/nileshkr17/web3.0--js#readme",
+  "dependencies": {
+    "js-sha256": "^0.9.0"
+  }
 }
