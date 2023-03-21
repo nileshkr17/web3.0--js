@@ -14,18 +14,32 @@ if(arguments.length > 2){
 
 //taking the body of the request and converting it into json
 app.use(express.json())
+let transactions= []
+let nodes=[]
+
 
 let genesisBlock = new Block()
-//let blockchain = new Blockchain(genesisBlock)
+let blockchain = new Blockchain(genesisBlock)
 
+//  ROUTES
 
+app.get('/resolve',(req,res)=>{
+    
+})
 
+app.post('/nodes/register',(req,res)=>{
 
+    const urls = req.body
+    urls.forEach(url=>{
+        const node = new BlockchainNode(url)
+        nodes.push(node)
+    })
+    res.json(nodes)
+})
 
 
 //an array to store all the transactions -nilesh
-let transaction= []
-let nodes=[]
+
 //create a new transaction -nilesh
 app.post('/transactions',(req,res)=>{
     const to =req.body.to
@@ -34,13 +48,15 @@ app.post('/transactions',(req,res)=>{
 
     //create a new transaction -nilesh
     let new_transaction = new Transaction(from,to,amount)
-    transaction.push(new_transaction)
-    res.json(transaction)
+    transactions.push(new_transaction)
+    res.json(transactions)
 })
 
 app.get('/mine',(req,res)=>{
-    let block = blockchain.getNextBlock(transaction)
+    let block = blockchain.getNextBlock(transactions)
     blockchain.addBlock(block)
+    transactions=[]
+
     res.json(block)
 })
 
@@ -57,15 +73,6 @@ app.get('/blockchain',(req,res)=>{
     // blockchain.addBlock(block1)
     // res.json(blockchain)
 
-})
-app.post('/nodes/register',(req,res)=>{
-
-    const urls = req.body
-    urls.forEach(url=>{
-        const node = new BlockchainNode(url)
-        nodes.push(node)
-    })
-    res.send(nodes)
 })
 
 app.listen(PORT,()=>{
