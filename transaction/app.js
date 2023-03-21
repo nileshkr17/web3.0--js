@@ -3,6 +3,7 @@ const Block = require('./block')
 const BlockchainNode = require('./blockchainNode')
 const Blockchain = require('./blockchain')
 const Transaction = require('./transaction')
+const fetch = require('node-fetch')
 
 const app = express()
 //const port = taking from console line and slicing it as the port is at position 2
@@ -16,6 +17,7 @@ if(arguments.length > 2){
 app.use(express.json())
 let transactions= []
 let nodes=[]
+let allTransactions = []
 
 
 let genesisBlock = new Block()
@@ -24,7 +26,15 @@ let blockchain = new Blockchain(genesisBlock)
 //  ROUTES
 
 app.get('/resolve',(req,res)=>{
-    
+    nodes.forEach(node=>{
+        fetch(`${node.url}/blockchain`)
+        .then(response=>response.json())
+        .then(otherBlockchain=>{
+            if(otherBlockchain.blocks.length>blockchain.blocks.length){
+                blockchain=otherBlockchain
+            }
+        })
+    })
 })
 
 app.post('/nodes/register',(req,res)=>{
@@ -55,6 +65,9 @@ app.post('/transactions',(req,res)=>{
 app.get('/mine',(req,res)=>{
     let block = blockchain.getNextBlock(transactions)
     blockchain.addBlock(block)
+    transactions.forEach(transaction=>{
+        allTransactions.push(transaction)
+    })
     transactions=[]
 
     res.json(block)
