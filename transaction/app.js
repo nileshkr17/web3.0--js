@@ -19,7 +19,6 @@ let transactions= []
 let nodes=[]
 let allTransactions = []
 
-
 let genesisBlock = new Block()
 let blockchain = new Blockchain(genesisBlock)
 
@@ -31,7 +30,30 @@ app.get('/resolve',(req,res)=>{
         .then(response=>response.json())
         .then(otherBlockchain=>{
             if(otherBlockchain.blocks.length>blockchain.blocks.length){
-                blockchain=otherBlockchain
+                allTransactions.forEach(transaction=>{
+                    fetch(`${node.url}/transactions`,{
+                        method:'POST',
+                        headers:{
+                                'Content-Type':'application/json'
+                            },
+                        body:JSON.stringify(transaction)
+                    }).then(response=>response.json())
+                    .then(result=>{
+                        fetch(`${node.url}/mine`)
+                        .then(response=>response.json())
+                        .then(result=>{
+                            fetch(`${node.url}/blockchain`)
+                            .then(response=>response.json())
+                            .then(updatedBlockchain=>{
+                                console.log(updatedBlockchain)
+                                blockchain=updatedBlockchain
+                                res.json(blockchain)
+                            })
+                        })
+                    })
+                })
+            }else{
+                res.json(blockchain)
             }
         })
     })
@@ -65,11 +87,10 @@ app.post('/transactions',(req,res)=>{
 app.get('/mine',(req,res)=>{
     let block = blockchain.getNextBlock(transactions)
     blockchain.addBlock(block)
-    transactions.forEach(transaction=>{
-        allTransactions.push(transaction)
+    transactions.forEach(transactions=>{
+        allTransactions.push(transactions)
     })
     transactions=[]
-
     res.json(block)
 })
 
